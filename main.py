@@ -470,8 +470,8 @@ class Spawn:
 
 
 ### ------ DEFINE CLASSES ------ ###
-player = Player(100)
-player2 = PlayerTwo(100)
+player = Player(10)
+player2 = PlayerTwo(10)
 spawn = Spawn(500) # The spawning frequency of incoming missiles will be 2 per second at the start of the game, but gradually increases [ see line 389 increase_freq() function ]
 
 ### ------ DEFINE SPIRITE GROUPs ------ ###
@@ -633,14 +633,9 @@ while running:
 
             elif event.type == ADDPIERCE:
                 ### ------ CREATE NEW PIERCE ------ ###
-                boss_active = False
-                for boss in bosses:
-                    if boss.died == False:
-                        boss_active = True
-                if boss_active is not True:
-                    new_pierce = Pierce()
-                    pierces.add(new_pierce)
-                    all_sprites.add(new_pierce)
+                new_pierce = Pierce()
+                pierces.add(new_pierce)
+                all_sprites.add(new_pierce)
 
             elif event.type == CLOCKTICK: 
                 game += 1
@@ -704,6 +699,14 @@ while running:
     ### ------ IF MISSLE AND BOSS COLLISION ------ ###
     for boss in bosses:
         if pygame.sprite.spritecollide(boss, shooters, True):
+            explosion_sound.play()
+            boss.get_hit()
+            if boss.lives == 0:
+                running = False
+
+    ### ------ IF PIERCE SHOOTER AND BOSS COLLISION ------ ###
+    for boss in bosses:
+        if pygame.sprite.spritecollide(boss, pierceshooters, True): # Remove pierceshooter to avoid detection of multiple collision 
             explosion_sound.play()
             boss.get_hit()
             if boss.lives == 0:
@@ -789,7 +792,6 @@ while running:
         new_boss.dt = pygame.time.get_ticks()
         bosses.add(new_boss)
         all_sprites.add(new_boss)
-        pierce_player = pierce_player2 = False
         boss1_sound.play()
         boss2_sound.play()
         bg_music = pygame.mixer.music.load("Boss.ogg")

@@ -1,4 +1,3 @@
-# dodge-n-shoot
 # Dodge n’ Shoot
 
 **Introduction**
